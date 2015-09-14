@@ -6,7 +6,7 @@ Project -> Properties -> Targeted Runtimes -> "set the server to use"
 
 ******************************************************************************
 
-The elipse project build path need to be configure.
+The elipse project build path need to be configured.
 
 Project -> Build Path -> Configure Build Path -> Defaut output folder: -> "Project Name/WebContent/WEB-INF/classes"
 
