@@ -34,23 +34,27 @@ public class CreationCommande extends HttpServlet {
  
     public static final String FORMAT_DATE            = "dd/MM/yyyy HH:mm:ss";
  
-    public static final String VUE                    = "/afficherCommande.jsp";
+    public static final String VUE_FORM = "/WEB-INF/creerCommande.jsp";
 	
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		String message = "Commande créée avec succès !";
-		boolean erreur = false;
-		Commande commande = createCommandeWithRequestValues(req);
-		Client client = createClientWithRequestValues(req);
-		
-		if(!client.isClientValid()|| !commande.isCommandeValid()){
-			erreur = true;
-			message = "Erreur - Vous n'avez pas rempli tous les champs obligatoires. <br> <a href=\"creerCommande.jsp\">Cliquez ici</a> pour accéder au formulaire de création d'une commande.";
-		}
-		req.setAttribute(ATT_ERREUR, erreur);
-		req.setAttribute(ATT_COMMANDE, commande);
-		req.setAttribute(ATT_MESSAGE, message);
-		this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
-	}
+//	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+//		String message = "Commande créée avec succès !";
+//		boolean erreur = false;
+//		Commande commande = createCommandeWithRequestValues(req);
+//		Client client = createClientWithRequestValues(req);
+//		
+//		if(!client.isClientValid()|| !commande.isCommandeValid()){
+//			erreur = true;
+//			message = "Erreur - Vous n'avez pas rempli tous les champs obligatoires. <br> <a href=\"creerCommande.jsp\">Cliquez ici</a> pour accéder au formulaire de création d'une commande.";
+//		}
+//		req.setAttribute(ATT_ERREUR, erreur);
+//		req.setAttribute(ATT_COMMANDE, commande);
+//		req.setAttribute(ATT_MESSAGE, message);
+//		this.getServletContext().getRequestDispatcher(VUE).forward(req, resp);
+//	}
+    
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+    	this.getServletContext().getRequestDispatcher(VUE_FORM).forward(req, resp);
+    }
 	
 	private Commande createCommandeWithRequestValues(HttpServletRequest req){
 		Commande commande = new Commande();

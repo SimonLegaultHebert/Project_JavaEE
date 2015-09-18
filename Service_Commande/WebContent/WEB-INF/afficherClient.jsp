@@ -10,7 +10,7 @@
     <body>
         <c:import url="/inc/menu.jsp" />
         <div id="corps">
-            <p class="info">${message}</p>
+            <p class="info">${form.resultat}</p>
             <c:if test="${!erreur}">
                 <p>Nom : <c:out value="${client.nom}"/></p>
                 <p>Prénom : <c:out value="${client.prenom}"/></p>
