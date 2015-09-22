@@ -6,12 +6,15 @@ import java.util.Date;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import service.beans.Client;
 import service.beans.Commande;
 
 public class CreationCommandeForm {
 
+	private static final String CHAMP_CHOIX_CLIENT = "choixNouveauClient";
+    private static final String CHAMP_LISTE_CLIENTS = "listeClients";
 	private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
 	private static final String CHAMP_DATE = "dateCommande";
 	private static final String CHAMP_MONTANT = "montantCommande";
@@ -19,60 +22,71 @@ public class CreationCommandeForm {
 	private static final String CHAMP_STATUT_PAIEMENT = "statutPaiementCommande";
 	private static final String CHAMP_MODE_LIVRAISON = "modeLivraisonCommande";
 	private static final String CHAMP_STATUT_LIVRAISON = "statutLivraisonCommande";
-	private static final Commande COMMANDE = new Commande();
+	
+	private static final String ANCIEN_CLIENT = "ancienClient";
+    private static final String SESSION_CLIENTS = "clients";
 	
 	private String resultat;
 	private HashMap<String, String> erreurs = new HashMap<String, String>();
 	
 	public Commande creerCommande(HttpServletRequest req){
-		CreationClientForm clientForm = new CreationClientForm();
-		Client client = clientForm.creerClient(req);
-		erreurs = clientForm.getErreurs();
-		COMMANDE.setClient(client);
-		
-		validationModePaiement(req.getParameter(CHAMP_MODE_PAIEMENT).trim());
-		validationStatutPaiement(req.getParameter(CHAMP_STATUT_PAIEMENT).trim());
-		validationModeLivraison(req.getParameter(CHAMP_MODE_LIVRAISON).trim());
-		validationStatutLivraison(req.getParameter(CHAMP_STATUT_LIVRAISON).trim());
-		validationMontant(req.getParameter(CHAMP_MONTANT).trim());
-		creerDate();
+		Client client;
+		Commande commande = new Commande();
+		String choixNouveauClient = getValeurChamp(req, CHAMP_CHOIX_CLIENT);
+		if(ANCIEN_CLIENT.equals(choixNouveauClient)){
+			String nomAncienClient = getValeurChamp(req, CHAMP_LISTE_CLIENTS);
+			HttpSession session = req.getSession();
+			client = ((HashMap<String, Client>) session.getAttribute(SESSION_CLIENTS)).get(nomAncienClient);
+		}else{
+			CreationClientForm clientForm = new CreationClientForm();
+			client = clientForm.creerClient(req);
+			erreurs = clientForm.getErreurs();
+		}
+		commande.setClient(client);
+				
+		validationModePaiement(commande, req.getParameter(CHAMP_MODE_PAIEMENT).trim());
+		validationStatutPaiement(commande, req.getParameter(CHAMP_STATUT_PAIEMENT).trim());
+		validationModeLivraison(commande, req.getParameter(CHAMP_MODE_LIVRAISON).trim());
+		validationStatutLivraison(commande, req.getParameter(CHAMP_STATUT_LIVRAISON).trim());
+		validationMontant(commande, req.getParameter(CHAMP_MONTANT).trim());
+		creerDate(commande);
 		if (erreurs.isEmpty()) {
             resultat = "Succès de la création de la commande.";
         } else {
             resultat = "Échec de la création de la commande.";
         }
-		return COMMANDE;
+		return commande;
 	}
 
-	private void validationModePaiement(String modePaiement){
+	private void validationModePaiement(Commande commande, String modePaiement){
 		if(modePaiement == null || modePaiement.length() < 2){
 			rajouterErreur(CHAMP_MODE_PAIEMENT, "Le mode de paiement doit contenir au moins 2 caractères.");
 		}
-		COMMANDE.setModePaiement(modePaiement);
+		commande.setModePaiement(modePaiement);
 	}
 	
-	private void validationStatutPaiement(String statutPaiement){
+	private void validationStatutPaiement(Commande commande, String statutPaiement){
 		if(statutPaiement.length() < 2){
 			rajouterErreur(CHAMP_STATUT_PAIEMENT, "Le statut de paiement doit contenir au moins 2 caractères.");
 		}
-		COMMANDE.setStatutPaiement(statutPaiement);
+		commande.setStatutPaiement(statutPaiement);
 	}	
 	
-	private void validationModeLivraison(String modeLivraison){
+	private void validationModeLivraison(Commande commande, String modeLivraison){
 		if(modeLivraison == null || modeLivraison.length() < 2){
 			rajouterErreur(CHAMP_MODE_LIVRAISON, "Le mode de paiement doit contenir au moins 2 caractères.");		
 		}
-		COMMANDE.setModeLivraison(modeLivraison);
+		commande.setModeLivraison(modeLivraison);
 	}
 	
-	private void validationStatutLivraison(String statutLivraison){
+	private void validationStatutLivraison(Commande commande, String statutLivraison){
 		if(statutLivraison.length() < 2){
 			rajouterErreur(CHAMP_STATUT_LIVRAISON, "Le statut de livraison doit contenir au moins 2 caractères.");
 		}
-		COMMANDE.setStatutLivraison(statutLivraison);
+		commande.setStatutLivraison(statutLivraison);
 	}
 	
-	private void validationMontant(String montant){
+	private void validationMontant(Commande commande, String montant){
 		double dMontant = -1;
 		if(montant == null){
 			rajouterErreur(CHAMP_MONTANT, "Le montant ne doit pas être vide.");
@@ -83,13 +97,13 @@ public class CreationCommandeForm {
 				rajouterErreur(CHAMP_MONTANT, "Le montant doit contenir seulement des chiffres.");
 			}
 		}		
-		COMMANDE.setMontant(dMontant);
+		commande.setMontant(dMontant);
 	}
 	
-	private void creerDate(){
+	private void creerDate(Commande commande){
 		DateFormat dateFormat = new SimpleDateFormat(FORMAT_DATE);
 		Date date = new Date(); 
-		COMMANDE.setDate(dateFormat.format(date));
+		commande.setDate(dateFormat.format(date));
 	}
 	
 	private void rajouterErreur(String champ, String message){
@@ -104,7 +118,14 @@ public class CreationCommandeForm {
 		return erreurs;
 	}
 
-	
+	private static String getValeurChamp(HttpServletRequest req, String nomChamp) {
+        String valeur = req.getParameter(nomChamp);
+        if (valeur == null || valeur.trim().length() == 0) {
+            return null;
+        } else {
+            return valeur;
+        }
+    }
 
 	
 	

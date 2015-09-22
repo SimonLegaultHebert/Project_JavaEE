@@ -50,6 +50,14 @@ public class Commande {
 	}
 	public void setStatutLivraison(String statutLivraison) {
 		this.statutLivraison = statutLivraison;
-	}	
+	}
+	@Override
+	public String toString() {
+		return "Commande [client=" + client + ", date=" + date + ", montant=" + montant + ", modePaiement="
+				+ modePaiement + ", statutPaiement=" + statutPaiement + ", modeLivraison=" + modeLivraison
+				+ ", statutLivraison=" + statutLivraison + "]";
+	}
+	
+	
 
 }

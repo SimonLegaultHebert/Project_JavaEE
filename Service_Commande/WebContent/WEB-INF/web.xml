@@ -10,6 +10,22 @@
         <servlet-name>CreationCommande</servlet-name>
         <servlet-class>service.servlets.CreationCommande</servlet-class>
     </servlet>
+    <servlet>
+    	<servlet-name>ListeClients</servlet-name>
+    	<servlet-class>service.servlets.ListeClients</servlet-class>
+    </servlet>
+    <servlet>
+    	<servlet-name>ListeCommandes</servlet-name>
+    	<servlet-class>service.servlets.ListeCommandes</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SuppressionClient</servlet-name>
+        <servlet-class>service.servlets.SuppressionClient</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SuppressionCommande</servlet-name>
+        <servlet-class>service.servlets.SuppressionCommande</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>CreationClient</servlet-name>
@@ -19,6 +35,22 @@
         <servlet-name>CreationCommande</servlet-name>
         <url-pattern>/creationCommande</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>ListeClients</servlet-name>
+    	<url-pattern>/listeClients</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>ListeCommandes</servlet-name>
+    	<url-pattern>/listeCommandes</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SuppressionClient</servlet-name>
+        <url-pattern>/suppressionClient</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SuppressionCommande</servlet-name>
+        <url-pattern>/suppressionCommande</url-pattern>
+    </servlet-mapping>
     
     <jsp-config>
         <jsp-property-group>
@@ -26,5 +58,23 @@
             <include-prelude>/WEB-INF/taglibs.jsp</include-prelude>
         </jsp-property-group>
     </jsp-config>
+    
+    <filter>
+    <filter-name>Set Character Encoding</filter-name>
+    <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+    <init-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+        <param-name>ignore</param-name>
+        <param-value>false</param-value>
+    </init-param>
+	</filter>
+	<filter-mapping>
+    	<filter-name>Set Character Encoding</filter-name>
+    	<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
 	
 </web-app>

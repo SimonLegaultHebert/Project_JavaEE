@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -11,16 +10,42 @@
         <c:import url="/inc/menu.jsp" />
         <div>
             <form method="post" action="<c:url value="/creationCommande"/>">
-                <c:set var="client" value="${commande.client}" scope="request" />
                 <fieldset>
                     <legend>Informations client</legend>
-                    <c:import url="/inc/inc_client_form.jsp" />
+                    <%-- Si et seulement si la Map des clients en session n'est pas vide, alors on propose un choix à l'utilisateur --%>
+                    <c:if test="${ !empty sessionScope.clients }">
+                        <label for="choixNouveauClient">Nouveau client ? <span class="requis">*</span></label>
+                        <input type="radio" id="choixNouveauClient" name="choixNouveauClient" value="nouveauClient" checked /> Oui
+                        <input type="radio" id="choixNouveauClient" name="choixNouveauClient" value="ancienClient" /> Non
+                        <br/><br />
+                    </c:if>
+                    
+                    <c:set var="client" value="${ commande.client }" scope="request" />
+                    <div id="nouveauClient">
+                        <c:import url="/inc/inc_client_form.jsp" />
+                    </div>
+                    
+                    <%-- Si et seulement si la Map des clients en session n'est pas vide, alors on crée la liste déroulante --%>
+                    <c:if test="${ !empty sessionScope.clients }">
+                    <div id="ancienClient">
+                        <select name="listeClients" id="listeClients">
+                            <option value="">Choisissez un client...</option>
+                            <%-- Boucle sur la map des clients --%>
+                            <c:forEach items="${ sessionScope.clients }" var="mapClients">
+                            <%--  L'expression EL ${mapClients.value} permet de cibler l'objet Client stocké en tant que valeur dans la Map, 
+                                  et on cible ensuite simplement ses propriétés nom et prenom comme on le ferait avec n'importe quel bean. --%>
+                            <option value="${ mapClients.value.nom }">${ mapClients.value.prenom } ${ mapClients.value.nom }</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    </c:if>
                 </fieldset>
                 <fieldset>
                     <legend>Informations commande</legend>
                     
                     <label for="dateCommande">Date <span class="requis">*</span></label>
-                    <input type="text" id="dateCommande" name="dateCommande" value="<c:out value="${commande.date}"/>" size="30" maxlength="30" disabled />
+                    <input type="text" id="v" name="dateCommande" value="<c:out value="${commande.date}"/>" size="30" maxlength="30" disabled />
+                    <span class="erreur">${form.erreurs['dateCommande']}</span>
                     <br />
                     
                     <label for="montantCommande">Montant <span class="requis">*</span></label>
@@ -47,11 +72,36 @@
                     <input type="text" id="statutLivraisonCommande" name="statutLivraisonCommande" value="<c:out value="${commande.statutLivraison}"/>" size="30" maxlength="30" />
                     <span class="erreur">${form.erreurs['statutLivraisonCommande']}</span>
                     <br />
+                    
+                    <p class="info">${ form.resultat }</p>
                 </fieldset>
-                <p class="info">${form.resultat}</p>
                 <input type="submit" value="Valider"  />
                 <input type="reset" value="Remettre à zéro" /> <br />
             </form>
         </div>
+        
+        <%-- Inclusion de la bibliothèque jQuery. Vous trouverez des cours sur JavaScript et jQuery aux adresses suivantes :
+               - http://www.siteduzero.com/tutoriel-3-309961-dynamisez-vos-sites-web-avec-javascript.html 
+               - http://www.siteduzero.com/tutoriel-3-659477-un-site-web-dynamique-avec-jquery.html 
+               
+             Si vous ne souhaitez pas télécharger et ajouter jQuery à votre projet, vous pouvez utiliser la version fournie directement en ligne par Google :
+             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script> 
+        --%>
+        <script src="<c:url value="/inc/jquery.js"/>"></script>
+        
+        <%-- Petite fonction jQuery permettant le remplacement de la première partie du formulaire par la liste déroulante, au clic sur le bouton radio. --%>
+        <script>
+        	jQuery(document).ready(function(){
+        		/* 1 - Au lancement de la page, on cache le bloc d'éléments du formulaire correspondant aux clients existants */
+        		$("div#ancienClient").hide();
+        		/* 2 - Au clic sur un des deux boutons radio "choixNouveauClient", on affiche le bloc d'éléments correspondant (nouveau ou ancien client) */
+                jQuery('input[name=choixNouveauClient]:radio').click(function(){
+                	$("div#nouveauClient").hide();
+                	$("div#ancienClient").hide();
+                    var divId = jQuery(this).val();
+                    $("div#"+divId).show();
+                });
+            });
+        </script>
     </body>
 </html>
