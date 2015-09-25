@@ -9,6 +9,7 @@ public class Commande {
 	private String statutPaiement;
 	private String modeLivraison;
 	private String statutLivraison;
+	
 	public Client getClient() {
 		return client;
 	}

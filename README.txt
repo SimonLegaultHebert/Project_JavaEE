@@ -12,3 +12,8 @@ Project -> Build Path -> Configure Build Path -> Defaut output folder: -> "Proje
 
 
 ******************************************************************************
+
+Look out to use the good path for the images folder in the web.xml file.
+
+
+******************************************************************************

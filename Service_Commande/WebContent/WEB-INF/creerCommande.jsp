@@ -9,7 +9,7 @@
     <body>
         <c:import url="/inc/menu.jsp" />
         <div>
-            <form method="post" action="<c:url value="/creationCommande"/>">
+            <form method="post" action="<c:url value="/creationCommande"/>" enctype="multipart/form-data">
                 <fieldset>
                     <legend>Informations client</legend>
                     <%-- Si et seulement si la Map des clients en session n'est pas vide, alors on propose un choix à l'utilisateur --%>

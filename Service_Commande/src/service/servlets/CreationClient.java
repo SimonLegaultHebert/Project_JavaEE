@@ -13,7 +13,8 @@ import javax.servlet.http.HttpSession;
 import service.beans.Client;
 import service.forms.CreationClientForm;
 
-public class CreationClient extends HttpServlet{    
+public class CreationClient extends HttpServlet{  
+	public static final String CHEMIN = "chemin";
     public static final String ATT_CLIENT = "client";
     public static final String ATT_FORM = "form";
     public static final String SESSION_CLIENTS = "clients";
@@ -26,8 +27,14 @@ public class CreationClient extends HttpServlet{
 	}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		CreationClientForm form = new CreationClientForm();
-		Client client = form.creerClient(req);		
+		/*
+         * Lecture du paramètre 'chemin' passé à la servlet via la déclaration
+         * dans le web.xml
+         */
+        String chemin = this.getServletConfig().getInitParameter(CHEMIN);
+        System.out.println("CHEMIN: " + chemin);
+        CreationClientForm form = new CreationClientForm();
+		Client client = form.creerClient(req, chemin);		
 		req.setAttribute(ATT_FORM, form);
 		req.setAttribute(ATT_CLIENT, client);
 		

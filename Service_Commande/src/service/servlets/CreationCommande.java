@@ -19,7 +19,7 @@ import service.forms.CreationCommandeForm;
 
 public class CreationCommande extends HttpServlet {
 
- 
+    public static final String CHEMIN = "chemin";
     public static final String ATT_FORM = "form";
     public static final String ATT_COMMANDE = "commande";
     public static final String SESSION_CLIENTS = "clients";
@@ -33,8 +33,9 @@ public class CreationCommande extends HttpServlet {
     }
     
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+    	String chemin = this.getServletConfig().getInitParameter(CHEMIN);
     	CreationCommandeForm form = new CreationCommandeForm();
-    	Commande commande = form.creerCommande(req);
+    	Commande commande = form.creerCommande(req, chemin);
     	req.setAttribute(ATT_COMMANDE, commande);
     	req.setAttribute(ATT_FORM, form);
     	
@@ -48,7 +49,7 @@ public class CreationCommande extends HttpServlet {
             session.setAttribute( SESSION_CLIENTS, clients );
 
             Map<String, Commande> commandes = (HashMap<String, Commande>) session.getAttribute( SESSION_COMMANDES );
-            if ( commandes == null ) {
+            if (commandes == null) {
                 commandes = new HashMap<String, Commande>();
             }
             commandes.put( commande.getDate(), commande );

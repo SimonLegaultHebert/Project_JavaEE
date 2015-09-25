@@ -15,7 +15,6 @@ public class CreationCommandeForm {
 
 	private static final String CHAMP_CHOIX_CLIENT = "choixNouveauClient";
     private static final String CHAMP_LISTE_CLIENTS = "listeClients";
-	private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
 	private static final String CHAMP_DATE = "dateCommande";
 	private static final String CHAMP_MONTANT = "montantCommande";
 	private static final String CHAMP_MODE_PAIEMENT = "modePaiementCommande";
@@ -25,11 +24,12 @@ public class CreationCommandeForm {
 	
 	private static final String ANCIEN_CLIENT = "ancienClient";
     private static final String SESSION_CLIENTS = "clients";
+    private static final String FORMAT_DATE = "dd/MM/yyyy HH:mm:ss";
 	
 	private String resultat;
 	private HashMap<String, String> erreurs = new HashMap<String, String>();
 	
-	public Commande creerCommande(HttpServletRequest req){
+	public Commande creerCommande(HttpServletRequest req, String chemin){
 		Client client;
 		Commande commande = new Commande();
 		String choixNouveauClient = getValeurChamp(req, CHAMP_CHOIX_CLIENT);
@@ -39,7 +39,7 @@ public class CreationCommandeForm {
 			client = ((HashMap<String, Client>) session.getAttribute(SESSION_CLIENTS)).get(nomAncienClient);
 		}else{
 			CreationClientForm clientForm = new CreationClientForm();
-			client = clientForm.creerClient(req);
+			client = clientForm.creerClient(req, chemin);
 			erreurs = clientForm.getErreurs();
 		}
 		commande.setClient(client);

@@ -7,6 +7,7 @@ public class Client {
 	private String adresse;
 	private String numeroTelephone;
 	private String email;
+	private String image;
 	
 	public String getNom() {
 		return nom;
@@ -37,6 +38,14 @@ public class Client {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}	
+	
+    
 	
 }
